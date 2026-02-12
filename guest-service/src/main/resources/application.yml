@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: guest-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3308/reservation_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+eureka:
+  client:
+    serviceUrl:
+      # ❌ ANTES: defaultZone: http://localhost:8761/eureka/
+      # ✅ DESPUÉS: Usa la variable de entorno del docker-compose
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: false
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:localhost}
+server:
+  port: 8082

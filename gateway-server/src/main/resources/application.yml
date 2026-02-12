@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: reservation-service # Id, se puede inventar , no se obtiene de algun dato del microservicio
+          uri: lb://reservation-service # sale del spring.application.name del microservicio
+          predicates: # URls publicas que expone el gateway
+            - Path=/api/reservations/**
+          filters:
+            - StripPrefix=1 # Elimina el nivel 1 del path del predicates antes de enviarlo al microservicio(/api) y comienza desde reservations
+
+        - id: room-service
+          uri: lb://room-service
+          predicates:
+            - Path=/api/rooms/**
+
+        - id: guest-service
+          uri: lb://guest-service
+          predicates:
+            - Path=/api/guests/**
+
+        - id: auth-service
+          uri: lb://auth-service
+          predicates: # URls publicas que expone el gateway
+            - Path=/api/auth/**
+          filters:
+            - RewritePath=/api/auth/(?<segment>.*), /auth/${segment}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+security:
+  jwt:
+    secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+    expiration-time: 3600000 # 24 horas en milisegundos

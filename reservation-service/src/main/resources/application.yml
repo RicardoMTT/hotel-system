@@ -1,0 +1,11 @@
+eureka:
+  client:
+    serviceUrl:
+      # ❌ ANTES: defaultZone: http://localhost:8761/eureka/
+      # ✅ DESPUÉS: Usa la variable de entorno del docker-compose
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: false
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:localhost}

@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: email-service
+
+  # ─────────────────────────────────────────
+  # KAFKA CONSUMER
+  # ─────────────────────────────────────────
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      # Se define un group-id porque
+      group-id: email-service-group
+      # Caso para el que si un topico tiene 100 mensajes y ahora se acaba de crear un ms , este ms al escuchar el topico leera los 100 mensajes, si el valor fuera latest,entonces ignoraria el pasado y solo esperaria a que alguien se registre a partir de ahora
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # Configuración para deserializar JSON y convertirlo a objetos
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      # Configuración para decirle a kafka que confie en todos los paquetes
+      properties:
+        spring.json.trusted.packages: "*"
+
+  # ─────────────────────────────────────────
+  # GMAIL SMTP
+  # IMPORTANTE: no uses tu contraseña normal de Gmail.
+  # Debes generar una "App Password" (Contraseña de aplicación):
+  #   1. Ve a myaccount.google.com → Seguridad
+  #   2. Activa la verificación en 2 pasos (obligatorio)
+  #   3. Busca "Contraseñas de aplicaciones"
+  #   4. Genera una para "Correo > Windows/Mac"
+  #   5. Usa esa contraseña de 16 caracteres aquí
+  # ─────────────────────────────────────────
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tu-correo@gmail.com
+    password: 12312312312312
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+        debug: false  # cambiar a true para ver logs detallados de SMTP
+
+# ─────────────────────────────────────────
+# CONFIGURACIÓN PROPIA DE LA APP
+# ─────────────────────────────────────────
+app:
+  kafka:
+    topics:
+      user-registered: user.registered
+  mail:
+    from: tricardo003@gmail.com
+
+
+server:
+  port: 8099

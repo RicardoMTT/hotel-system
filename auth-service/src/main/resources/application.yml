@@ -1,0 +1,21 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092 #  Cambiar a kafka:29092 si corres en Docker
+    producer:
+      # Configuración base (KafkaProducerConfig.java la sobreescribe con más detalle)
+      # Esto es para Spring espere que tanto key como value del mensaje sean String
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # Esto quiere decir que todo lo que se envie se convertira a JSON que se convertira en un bytes[] , porque kafka solo sabe almacenar y transmitir bytes
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+# Topics propios de la aplicación
+# Centralizar los nombres aquí evita strings mágicos en el código
+app:
+  kafka:
+    topics:
+      user-registered: user.registered

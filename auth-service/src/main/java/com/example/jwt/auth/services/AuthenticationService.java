@@ -49,6 +49,7 @@ public class AuthenticationService {
 
         User savedUser = userRepository.save(user);
 
+        // Se publica un evento de usuario registrado
         userEventProducer.publishUserRegistered(
                 input.email(),   // reemplaza con: user.getEmail() o request.email()
                 input.fullName() // reemplaza con: user.getFullName() o request.fullName()

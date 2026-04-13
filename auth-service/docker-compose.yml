@@ -37,45 +37,13 @@ services:
     volumes:
       - kafka_data:/var/lib/kafka/data
     networks:
-      - kafka-network
+      - hotel-network
     healthcheck:
       test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 5
       start_period: 30s
-
-  # ─────────────────────────────────────────
-  # KAFKA INIT — Crea los topics al arrancar
-  # Se ejecuta una sola vez y termina
-  # ─────────────────────────────────────────
-  kafka-init:
-    image: apache/kafka:3.7.0
-    container_name: kafka-init
-    depends_on:
-      kafka:
-        condition: service_healthy
-    networks:
-      - kafka-network
-    entrypoint: ["/bin/bash", "-c"]
-    command: |
-      "
-      echo '--- Creando topics de Kafka ---'
-
-      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create --if-not-exists \
-        --topic user.registered \
-        --partitions 3 \
-        --replication-factor 1
-
-      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --create --if-not-exists \
-        --topic user.registered.DLT \
-        --partitions 1 \
-        --replication-factor 1
-
-      echo '--- Topics creados ---'
-      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --list
-      "
-    restart: "no"
 
   # ─────────────────────────────────────────
   # KAFKA UI — Panel web
@@ -93,12 +61,12 @@ services:
       kafka:
         condition: service_healthy
     networks:
-      - kafka-network
+      - hotel-network
 
 volumes:
   kafka_data:
     driver: local
 
 networks:
-  kafka-network:
+  hotel-network:
     driver: bridge

@@ -32,3 +32,24 @@ Este proyecto:
   - docker-compose.yml
 
     Levanta 2 servicios, uno que creara un contenedor de una imagen de Mysql , y otra que levantara un contenedor de la imagen que se creo en el Dockerfile
+
+
+
+### Kafka
+Una vez levantado el contenedor de kafka, tendremos que crear los topicos de kafka
+
+Entramos al contenedor:
+docker exec -it kafka /bin/bash
+
+Creamos los topicos:
+Topico de pagos
+
+/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --if-not-exists --topic payment.confirmed --partitions 3 --replication-factor 1
+
+
+
+Topico de usuarios
+/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --if-not-exists --topic user.registered --partitions 3 --replication-factor 1
+
+Listar topicos
+/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
